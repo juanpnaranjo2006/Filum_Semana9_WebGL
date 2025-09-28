@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+        <script src="https://cdn.babylonjs.com/recast.js"></script>
+        <script src="https://cdn.babylonjs.com/ammo.js"></script>
+        <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
+        <script src="https://cdn.babylonjs.com/cannon.js"></script>
+        <script src="https://cdn.babylonjs.com/Oimo.js"></script>
+        <script src="https://cdn.babylonjs.com/earcut.min.js"></script>
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
+        <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+        <style>
+            html,
+            body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+
+            #canvasZone {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
+        <script>
+                    var canvas = document.getElementById("renderCanvas");
+
+                    var startRenderLoop = function (engine, canvas) {
+                        engine.runRenderLoop(function () {
+                            if (sceneToRender && sceneToRender.activeCamera) {
+                                sceneToRender.render();
+                            }
+                        });
+                    }
+
+                    var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+        var createScene = function () {
+    var scene = new BABYLON.Scene(engine);
+
+    var camera = new BABYLON.ArcRotateCamera("camera", BABYLON.Tools.ToRadians(90), BABYLON.Tools.ToRadians(65), 10, BABYLON.Vector3.Zero(), scene);
+
+    // This attaches the camera to the canvas
+    camera.attachControl(canvas, true);
+
+    // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+
+    // Default intensity is 1. Let's dim the light a small amount
+    light.intensity = 0.7;
+
+    const roofMat = new BABYLON.StandardMaterial("roofMat");
+    roofMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/roof.jpg", scene);
+
+
+    
+    // Piso de tierra con mapa de normales
+    var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 100, height: 100}, scene);
+    let groundMaterial = new BABYLON.StandardMaterial("Ground Material", scene);
+    ground.material = groundMaterial;
+    let groundTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/tierra.jpg", scene);
+    ground.material.diffuseTexture = groundTexture;
+    ground.material.bumpTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/tierra_normal.png", scene);
+
+    //Material de tronco con mapa de normales
+    var troncoMaterial = new BABYLON.StandardMaterial("troncoMaterial", scene);
+    troncoMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/tronco_palmera.jpg", scene);
+    troncoMaterial.bumpTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/tronco_palmera_normal.jpg", scene);
+
+    var hojasMaterial = new BABYLON.StandardMaterial("hojasMaterial", scene);
+    hojasMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/hojas_palmera.jpg", scene);
+
+    var cocoMaterial = new BABYLON.StandardMaterial("cocoMaterial", scene);
+    cocoMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/coco_palmera.jpg", scene);
+
+    var caballoMaterial = new BABYLON.StandardMaterial("caballoMaterial", scene);
+    caballoMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/caballo.jpg", scene);
+
+    var fogataMaterial = new BABYLON.StandardMaterial("fogataMaterial", scene);
+    fogataMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/fogata.jpg", scene);
+
+    var estrellaMaterial = new BABYLON.StandardMaterial("estrellaMaterial", scene);
+    estrellaMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/estrellita.png", scene);
+
+    var sillaMaterial = new BABYLON.StandardMaterial("sillaMaterial", scene);
+    sillaMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/silla.png", scene);
+
+    var chinMaterial = new BABYLON.StandardMaterial("chinMaterial", scene);
+    chinMaterial.diffuseTexture = new BABYLON.Texture("https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/chinchorro.jpg", scene);
+
+    //Palmera
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/", "palma.glb").then((result) => {
+        var i = 1;
+        while (i <= 3) 
+        {
+            result.meshes[i].position.x = 1;
+            result.meshes[i].position.y = 0;
+            result.meshes[i].scaling.x = 0.15*2*2;
+            result.meshes[i].scaling.y = 0.15*2*2;
+            result.meshes[i].scaling.z = 0.15*2*2;
+            i += 1;
+        };
+        result.meshes[1].material = cocoMaterial;
+        result.meshes[2].material = troncoMaterial;
+        result.meshes[3].material = hojasMaterial;
+        
+  
+    });
+
+    //Caballo
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/", "caballo.glb").then((result) => {
+    	result.meshes[1].position.x = 10;
+        result.meshes[1].material = caballoMaterial;
+        result.meshes[1].scaling = new BABYLON.Vector3(0.01*2, 0.01*2, 0.01*2);
+        
+  
+    });
+
+    //Fogata
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/", "fogata.glb").then((result) => {
+    	result.meshes[1].position.x = 5;
+        result.meshes[1].position.z = -5;
+        result.meshes[1].material = fogataMaterial;
+        result.meshes[1].scaling = new BABYLON.Vector3(0.01*2, 0.01*2, 0.01*2);
+        
+  
+    });
+
+    //Estrella
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/", "estrellita.glb").then((result) => {
+    	result.meshes[1].position.x = 0;
+        result.meshes[1].position.y = 15;
+        result.meshes[1].material = estrellaMaterial;
+        result.meshes[1].scaling = new BABYLON.Vector3(1, 1, 1);
+        
+  
+    });
+
+    //Silla
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/", "silla.glb").then((result) => {
+    	result.meshes[1].position.x = -7;
+        result.meshes[1].position.y = 3.5;
+        result.meshes[1].position.z = -7;
+        result.meshes[1].material = sillaMaterial;
+        result.meshes[1].scaling = new BABYLON.Vector3(1, 1, 1);
+        
+  
+    });
+
+    //Chinchorro
+    BABYLON.SceneLoader.ImportMeshAsync("", "https://juanpnaranjo2006.github.io/Filum_Semana9_WebGL/", "chinchorro.glb").then((result) => {
+        var j = 1;
+        while (j <= 7) 
+        {
+            result.meshes[j].position.x = -7;
+            result.meshes[j].position.y = 7.5;
+            result.meshes[j].position.z = 0;
+            result.meshes[j].scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+            j += 1;
+        };
+
+        result.meshes[4].material = chinMaterial;
+        
+  
+    });
+
+
+
+    return scene;
+};
+                window.initFunction = async function() {
+                    
+                    
+                    
+                    var asyncEngineCreation = async function() {
+                        try {
+                        return createDefaultEngine();
+                        } catch(e) {
+                        console.log("the available createEngine function failed. Creating the default engine instead");
+                        return createDefaultEngine();
+                        }
+                    }
+
+                    window.engine = await asyncEngineCreation();
+                    
+                    const engineOptions = window.engine.getCreationOptions?.();
+                    if (!engineOptions || engineOptions.audioEngine !== false) {
+                        
+                    }
+        if (!engine) throw 'engine should not be null.';
+        startRenderLoop(engine, canvas);
+        window.scene = createScene();};
+        initFunction().then(() => {sceneToRender = scene
+                    });
+
+                    // Resize
+                    window.addEventListener("resize", function () {
+                        engine.resize();
+                    });
+        </script>
+    </body>
+</html>
